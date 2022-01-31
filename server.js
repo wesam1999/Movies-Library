@@ -1,7 +1,7 @@
 'use strict';
-
-
-
+const PORT = process.env.PORT;
+require('dotenv').config();
+const axios=require('axios')
 const express = require('express');
 const cors = require('cors');
 const data = require('./move data/data.json');
@@ -11,13 +11,47 @@ server.use(cors());
 
 server.get('/', handelMainPage);
 server.get('/favorite', handelFavorite);
+server.get('/trending',handeltrending)
+server.get('/search',handelsearch)
 // server.get('*', handelerrors);
 // server.get('*',handelerrors1);
-
+let url=`https:https://api.themoviedb.org/3/movie/550?api_key=${process.env.APIKEY}`
 server.get('*', function(req, res) {
     
     return res.status(404).send("page not found error")  ;
 });
+function Recipe(id, title, release_date, poster_path, overview){
+    this.id = id;
+    this.title = title;
+    this.release_date = release_date;
+    this.poster_path = poster_path;
+    this.overview = overview;
+   
+}
+function handelsearch(req,res){
+
+
+
+}
+function handeltrending(req,res){
+    let newArr = [];
+    axios.get(url)
+     .then((result)=>{
+        // console.log(result.data.recipes);
+        // let recipes = result.data.recipes.map(recipe =>{
+        //     return new Recipe(recipe.id,recipe.title,recipe.readyInMinutes,recipe.summary,recipe.vegetarian,recipe.instructions,recipe.sourceUrl,recipe.image);
+        // });
+        result.data.recipes.forEach(recipe =>{
+            newArr.push(new Recipe(recipe.id,recipe.title,recipe.release_date,recipe.poster_path,recipe.overview));
+        })
+        res.status(200).json(newArr);
+
+    }).catch((err)=>{
+
+    })
+
+
+}
 
 // //Handle 404
 // server.use(function(err, req, res, next){
@@ -116,7 +150,7 @@ function handelMainPage(req, res) {
 
 
 
-server.listen(3000, () => {
+server.listen(PORT, () => {
     console.log("my server is lisining for port 3000");
 
 });
