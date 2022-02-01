@@ -29,7 +29,21 @@ function Recipe(id, title, release_date, poster_path, overview){
    
 }
 function handelsearch(req,res){
+    let newArr = [];
+    axios.get('https://api.themoviedb.org/3/search/movie?api_key=668baa4bb128a32b82fe0c15b21dd699&language=en-US&query=The&page=2&number=2&title=The Fate of the Furious&title=The Deep House')
+     .then((result)=>{
+        // console.log(result.data.recipes);
+        // let recipes = result.data.recipes.map(recipe =>{
+        //     return new Recipe(recipe.id,recipe.title,recipe.readyInMinutes,recipe.summary,recipe.vegetarian,recipe.instructions,recipe.sourceUrl,recipe.image);
+        // });
+        result.data.recipes.forEach(recipe =>{
+            newArr.push(new Recipe(recipe.id,recipe.title,recipe.release_date,recipe.poster_path,recipe.overview));
+        })
+        res.status(200).json(newArr);
 
+    }).catch((err)=>{
+
+    })
 
 
 }
