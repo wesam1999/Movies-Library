@@ -1,5 +1,5 @@
 
-   [ {
+   {
         "title": "Spider-Man: No Way Home",
         "genre_ids": [
         28,
@@ -19,45 +19,4 @@
         "backdrop_path": "/1Rr5SrvHxMXHu5RjKpaMba8VTzi.jpg",
         "popularity": 10039.54,
         "media_type": "movie"
-    },{
-        "adult": false,
-        "backdrop_path": "/qqthj8EUL4QKlDBoMcPqeWvi6Ya.jpg",
-        "genre_ids": [
-          16,
-          14,
-          10402,
-          12,
-          35
-        ],
-        "id": 756403,
-        "original_language": "en",
-        "original_title": "Riverdance: The Animated Adventure",
-        "overview": "A young Irish boy named Keegan and Spanish girl named Moya journey into a magical world of the Megaloceros Giganteus who teach them to appreciate Riverdance as a celebration of life. Based on the stage show phenomenon of the same name and featuring Bill Whelan’s multi-platinum Grammy Award-winning music.",
-        "popularity": 1229.829,
-        "poster_path": "/i6TRDlVuuEXMyLSlIkDd8YhBN0r.jpg",
-        "release_date": "2021-05-28",
-        "title": "Riverdance: The Animated Adventure",
-        "video": false,
-        "vote_average": 5.6,
-        "vote_count": 21
-      },
-      {
-        "adult": false,
-        "backdrop_path": "/5Zv5KmgZzdIvXz2KC3n0MyecSNL.jpg",
-        "genre_ids": [
-          28,
-          53,
-          80
-        ],
-        "id": 634528,
-        "original_language": "en",
-        "original_title": "The Marksman",
-        "overview": "Jim Hanson’s quiet life is suddenly disturbed by two people crossing the US/Mexico border – a woman and her young son – desperate to flee a Mexican cartel. After a shootout leaves the mother dead, Jim becomes the boy’s reluctant defender. He embraces his role as Miguel’s protector and will stop at nothing to get him to safety, as they go on the run from the relentless assassins.",
-        "popularity": 267.128,
-        "poster_path": "/6vcDalR50RWa309vBH1NLmG2rjQ.jpg",
-        "release_date": "2021-01-15",
-        "title": "The Marksman",
-        "video": false,
-        "vote_average": 7,
-        "vote_count": 1088
-      }]
+    }
