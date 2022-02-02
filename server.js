@@ -9,6 +9,8 @@ const data = require('./move data/data.json');
 const pg = require('pg');
 const PORT = process.env.PORT;
 const server = express();
+server.use(express.json())
+
 server.use(cors());
 const client = new pg.Client(process.env.DATABASE_URL);
 
@@ -23,13 +25,13 @@ server.use(express.json());
 function handeladdMovie(req,res){
 
     const recipe = req.body;
-    //   console.log(recipe)
-      let sql = `INSERT INTO favRecipes(title,readyInMinutes,summary,vegetarian,instructions,sourceUrl) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *;`
-      let values=[recipe.title,recipe.readyInMinutes,recipe.summary,recipe.vegetarian,recipe.instructions,recipe.sourceUrl];
+    console.log(recipe)
+    let sql =`INSERT INTO favRecipes(title, release_date, poster_path, overview) VALUES($1, $2, $3, $4) RETURNING *;`
+    let values = [recipe.title, recipe.release_date, recipe.poster_path, recipe.overview];
       client.query(sql,values).then(data =>{
-          res.status(200).json(data.rows);
+          res.status(200).json(data.rows[0]);
       }).catch(error=>{
-          
+          console.log(error);
       });
 
 }
