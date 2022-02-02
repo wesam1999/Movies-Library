@@ -4,15 +4,50 @@ require('dotenv').config();
 const axios=require('axios')
 const express = require('express');
 const cors = require('cors');
+
 const data = require('./move data/data.json');
+const pg = require('pg');
 const PORT = process.env.PORT;
 const server = express();
 server.use(cors());
+const client = new pg.Client(process.env.DATABASE_URL);
 
 server.get('/', handelMainPage);
 server.get('/favorite', handelFavorite);
 server.get('/trending',handeltrending)
-server.get('/search',handelsearch)
+server.get('/search',handelsearch);
+server.psot('/addMovie',handeladdMovie);
+server.get('/getMovies',handelgetMovies);
+server.use(express.json());
+
+function handeladdMovie(req,res){
+
+    const recipe = req.body;
+    //   console.log(recipe)
+      let sql = `INSERT INTO favRecipes(title,readyInMinutes,summary,vegetarian,instructions,sourceUrl) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *;`
+      let values=[recipe.title,recipe.readyInMinutes,recipe.summary,recipe.vegetarian,recipe.instructions,recipe.sourceUrl];
+      client.query(sql,values).then(data =>{
+          res.status(200).json(data.rows);
+      }).catch(error=>{
+          
+      });
+
+}
+
+function handelgetMovies(req,res){
+    let sql = `SELECT * FROM favRecipes;`;
+    client.query(sql).then(data=>{
+       res.status(200).json(data.rows);
+    }).catch(error=>{
+        errorHandler(error,req,res)
+    });
+
+
+}
+
+
+
+
 
 // let url=`https://api.themoviedb.org/3/movie/550?api_key=${process.env.APIKEY}&language=en-US&query=The&page=2&number=2`
 server.get('*', function(req, res) {
@@ -90,6 +125,8 @@ function handelMainPage(req, res) {
 
 
 
-server.listen(PORT, () => {
-    console.log("my server is lisining for port 3000");
-});
+client.connect().then(()=>{
+    server.listen(PORT,()=>{
+        console.log(`listining to port ${PORT}`)
+    })
+})
