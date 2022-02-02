@@ -16,7 +16,7 @@ server.get('/', handelMainPage);
 server.get('/favorite', handelFavorite);
 server.get('/trending',handeltrending)
 server.get('/search',handelsearch);
-server.psot('/addMovie',handeladdMovie);
+server.post('/addMovie',handeladdMovie);
 server.get('/getMovies',handelgetMovies);
 server.use(express.json());
 
@@ -39,7 +39,7 @@ function handelgetMovies(req,res){
     client.query(sql).then(data=>{
        res.status(200).json(data.rows);
     }).catch(error=>{
-        errorHandler(error,req,res)
+        
     });
 
 
