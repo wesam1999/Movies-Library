@@ -12,15 +12,62 @@ const server = express();
 server.use(express.json())
 
 server.use(cors());
-const client = new pg.Client(process.env.DATABASE_URL);
-
+// const client = new pg.Client(process.env.DATABASE_URL);
+const client = new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }})
 server.get('/', handelMainPage);
 server.get('/favorite', handelFavorite);
 server.get('/trending',handeltrending)
 server.get('/search',handelsearch);
 server.post('/addMovie',handeladdMovie);
 server.get('/getMovies',handelgetMovies);
+server.put('//UPDATE/id',handelUpdateMovies);
+server.delete('/DELETE/id',handelDeleteMovies);
+server.get('/getMovie/id',handelgetIdMovies);
 server.use(express.json());
+function handelUpdateMovies(req,res)
+{
+const id=req.params.id;
+console.log(id);
+const recipe = req.body;
+const sql=`UPDATE favRecipes SET title=$1, release_date=$2, poster_path=$3, overview=$4 RETURNING *;`;
+let values = [recipe.title, recipe.release_date, recipe.poster_path, recipe.overview];
+client.query(sql,values).then(data=>{
+    res.status(200).json(data.rows);
+    // res.status(204)
+}).catch(error=>{
+
+});
+
+}
+
+function handelDeleteMovies(req,res)
+{
+const id = req.params.id;
+    const sql = `DELETE FROM favRecipes WHERE id=${id};`
+    client.query(sql).then(()=>{
+        res.status(200).send("The Recipe has been deleted");
+        // res.status(204).json({});
+    }).catch(error=>{
+        
+    });
+}
+  
+
+function handelgetIdMovies(req,res)
+{
+
+    let sql = `SELECT * FROM favRecipes WHERE id=${req.params.id};`;
+    
+    client.query(sql).then(data=>{
+        res.status(200).json(data.rows);
+     }).catch(error=>{
+        
+     });
+
+}
+
 
 function handeladdMovie(req,res){
 
