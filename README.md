@@ -24,4 +24,4 @@ second get the linl url and add put it "localhost:3000/"if you want to open the 
 
 ## Project Features
 <!-- What are the features included in you app -->
-used for sreach and add and browse the move that you like
+
