@@ -12,8 +12,10 @@ const server = express();
 server.use(express.json())
 
 server.use(cors());
-const client = new pg.Client(process.env.DATABASE_URL);
-
+// const client = new pg.Client(process.env.DATABASE_URL);
+const client = new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }})
 server.get('/', handelMainPage);
 server.get('/favorite', handelFavorite);
 server.get('/trending',handeltrending)
