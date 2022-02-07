@@ -22,10 +22,15 @@ server.get('/trending',handeltrending)
 server.get('/search',handelsearch);
 server.post('/addMovie',handeladdMovie);
 server.get('/getMovies',handelgetMovies);
-server.put('//UPDATE/id',handelUpdateMovies);
+server.put('/UPDATE/id',handelUpdateMovies);
 server.delete('/DELETE/id',handelDeleteMovies);
 server.get('/getMovie/id',handelgetIdMovies);
 server.use(express.json());
+server.get('*',handelerror);
+function  handelerror(req,res)
+{
+    res.status(404).send("error 404");
+}
 function handelUpdateMovies(req,res)
 {
 const id=req.params.id;
