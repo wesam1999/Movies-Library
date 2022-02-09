@@ -14,18 +14,74 @@ server.use(express.json())
 server.use(cors());
 // const client = new pg.Client(process.env.DATABASE_URL);
 const client = new pg.Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }})
+    connectionString: process.env.DATABASE_URL
+    // ssl: { rejectUnauthorized: false }
+}
+    )
 server.get('/', handelMainPage);
 server.get('/favorite', handelFavorite);
 server.get('/trending',handeltrending)
 server.get('/search',handelsearch);
+server.get('/search1',handelsearch1);
+server.get('/search2',handelsearch2);
 server.post('/addMovie',handeladdMovie);
 server.get('/getMovies',handelgetMovies);
-server.put('//UPDATE/id',handelUpdateMovies);
-server.delete('/DELETE/id',handelDeleteMovies);
-server.get('/getMovie/id',handelgetIdMovies);
+server.put('/UPDATE/:id',handelUpdateMovies);
+server.delete('/DELETE/:id',handelDeleteMovies);
+server.get('/getMovie/:id',handelgetIdMovies);
 server.use(express.json());
+server.use('*',notFoundHandler);
+server.use(errorHandler)
+function handelsearch1(req,res)
+{
+    let url=`https://tastedive.com/api/similar?q=red+hot+chili+peppers%2C+pulp+fiction`;
+  
+    axios.get(url)
+      .then((result)=>{
+         
+       
+         res.status(200).json(result.data.Similar.Results)
+
+     }).catch((error)=>{
+         errorHandler(error,req,res)
+     })
+ 
+ 
+ }
+ function handelsearch2(req,res)
+{
+    let url=`https://api.tvmaze.com/singlesearch/shows?q=girls`;
+  
+    axios.get(url)
+      .then((result)=>{
+         
+        
+        res.status(200).json(result.data)
+
+     }).catch((error)=>{
+         errorHandler(error,req,res)
+     })
+ 
+ 
+ }
+
+
+ function handeltrending(req,res){
+    console.log("asdsdsad"); 
+     axios.get(`https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.APIKEY}&language=en-US`)
+      .then((result)=>{
+         console.log("inside");
+         let recipes = result.data.results.map(recipes =>{
+             return new Recipe(recipes.id,recipes.title,recipes.release_date,recipes.poster_path,recipes.overview);
+         });res.status(200).json(recipes)
+ 
+     }).catch((error)=>{
+         errorHandler(error,req,res)
+     })
+         
+ 
+
+}
 function handelUpdateMovies(req,res)
 {
 const id=req.params.id;
@@ -37,7 +93,7 @@ client.query(sql,values).then(data=>{
     res.status(200).json(data.rows);
     // res.status(204)
 }).catch(error=>{
-
+    errorHandler(error,req,res)
 });
 
 }
@@ -50,7 +106,7 @@ const id = req.params.id;
         res.status(200).send("The Recipe has been deleted");
         // res.status(204).json({});
     }).catch(error=>{
-        
+        errorHandler(error,req,res)
     });
 }
   
@@ -63,7 +119,7 @@ function handelgetIdMovies(req,res)
     client.query(sql).then(data=>{
         res.status(200).json(data.rows);
      }).catch(error=>{
-        
+        errorHandler(error,req,res)
      });
 
 }
@@ -78,7 +134,7 @@ function handeladdMovie(req,res){
       client.query(sql,values).then(data =>{
           res.status(200).json(data.rows[0]);
       }).catch(error=>{
-          console.log(error);
+        errorHandler(error,req,res)
       });
 
 }
@@ -88,7 +144,7 @@ function handelgetMovies(req,res){
     client.query(sql).then(data=>{
        res.status(200).json(data.rows);
     }).catch(error=>{
-        
+        errorHandler(error,req,res)
     });
 
 
@@ -111,17 +167,21 @@ function Recipe(id, title, release_date, poster_path, overview){
     this.overview = overview;
    
 }
+let titleSearch = "Spider-Man: No Way Home";
 function handelsearch(req,res){
-   let url=`https://api.themoviedb.org/3/trending/all/week?api_key=${process.env.APIKEY}&language=en-US`;
-    axios.get(url)
+ let  searchquery=req.query.searchquery;
+//  console.log(searchquery);
+    let url=` https://api.themoviedb.org/3/search/movie?api_key=${process.env.APIKEY}&language=en-US&query=${searchquery}&page=2`;
+  
+   axios.get(url)
      .then((result)=>{
         
         let recipes = result.data.results.map(recipes =>{
             return new Recipe(recipes.id,recipes.title,recipes.release_date,recipes.poster_path,recipes.overview);
         });res.status(200).json(recipes)
 
-    }).catch((err)=>{
-        console.log(err);
+    }).catch((error)=>{
+        errorHandler(error,req,res)
     })
 
 
@@ -135,8 +195,8 @@ function handeltrending(req,res){
             return new Recipe(recipes.id,recipes.title,recipes.release_date,recipes.poster_path,recipes.overview);
         });res.status(200).json(recipes)
 
-    }).catch((err)=>{
-console.log(err);
+    }).catch((error)=>{
+        errorHandler(error,req,res)
     })
         
 
@@ -170,7 +230,17 @@ function handelMainPage(req, res) {
     return res.status(200).json(obj);
 }
 
-
+function notFoundHandler(req,res){
+    res.status(404).send("This page is not found")
+ }
+ 
+ function errorHandler (error,req,res){
+    const err = {
+         status : 500,
+         messgae : error
+     }
+     res.status(500).send(err);
+ }
 
 
 
